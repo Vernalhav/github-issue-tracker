@@ -1,6 +1,7 @@
 import config
 from selenium import webdriver
 from issuespage import IssuesPage
+from loginpage import LoginPage
 from repopage import RepoPage
 from selenium.webdriver.chrome.service import Service
 
@@ -18,7 +19,8 @@ def main():
     repo_url = 'https://github.com/Vernalhav/github-issue-tracker'
 
     with get_driver() as driver:
-        repo_page = RepoPage.go_to_repo(repo_url, driver)
+        login_page = LoginPage(driver)
+        print(login_page.is_logged_in())
 
 
 if __name__ == '__main__':
