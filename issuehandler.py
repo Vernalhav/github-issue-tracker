@@ -18,15 +18,18 @@ def get_driver():
 
 
 def main():
-    repo_url = 'https://github.com/Vernalhav/github-issue-tracker'
+    repo_url = 'https://www.github.com/Vernalhav/github-issue-tracker'
 
     with get_driver() as driver:
         home_page = HomePage(driver)
         home_page.go_to_page()
         
         if not home_page.is_logged_in():
-            time.sleep(30)
+            login_page = LoginPage(driver)
+            login_page.go_to_page()
+            login_page.wait_for_manual_login()
 
+        print(f'End')
 
 if __name__ == '__main__':
     main()
