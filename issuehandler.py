@@ -1,5 +1,7 @@
+import time
 import config
 from selenium import webdriver
+from homepage import HomePage
 from issuespage import IssuesPage
 from loginpage import LoginPage
 from repopage import RepoPage
@@ -19,8 +21,11 @@ def main():
     repo_url = 'https://github.com/Vernalhav/github-issue-tracker'
 
     with get_driver() as driver:
-        login_page = LoginPage(driver)
-        print(login_page.is_logged_in())
+        home_page = HomePage(driver)
+        home_page.go_to_page()
+        
+        if not home_page.is_logged_in():
+            time.sleep(30)
 
 
 if __name__ == '__main__':
