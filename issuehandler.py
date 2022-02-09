@@ -62,56 +62,59 @@ def create_parser():
     return parser
 
 
-def close_issue(repo_url: str, id: int, **kwargs):
-    with get_driver() as driver:
-        home_page = HomePage(driver).go()
+def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):
+    home_page = HomePage(driver).go()
 
-        if not home_page.is_logged_in() and not login_manually(driver):
-            print('User has not logged in')
+    if not home_page.is_logged_in() and not login_manually(driver):
+        print('User has not logged in')
+        return
+
+    repo_page = RepoPage(driver, repo_url).go()
+    issues_page = repo_page.go_to_issues().go()
+
+    try:
+        issue = issues_page.get_issue_by_id(id).go()
+
+        if not issue.is_open:
+            print('Issue is already closed')
             return
 
-        repo_page = RepoPage(driver, repo_url).go()
-        issues_page = repo_page.go_to_issues().go()
+        issue.close()
 
-        try:
-            issue = issues_page.get_issue_by_id(id).go()
-
-            if not issue.is_open:
-                print('Issue is already closed')
-                return
-
-            issue.close()
-
-        except NoIssueWithIDException:
-            print('No issue found with specified ID')
+    except NoIssueWithIDException:
+        print('No issue found with specified ID')
 
 
-def comment_issue(repo_url: str, id: int, message: str, close: bool, **kwargs):
-    with get_driver() as driver:
-        home_page = HomePage(driver).go()
+def comment_issue(repo_url: str, id: int,
+                  message: str, close: bool,
+                  driver: WebDriver, **kwargs):
 
-        if not home_page.is_logged_in() and not login_manually(driver):
-            print('User has not logged in')
-            return
+    home_page = HomePage(driver).go()
 
-        repo_page = RepoPage(driver, repo_url).go()
-        issues_page = repo_page.go_to_issues().go()
+    if not home_page.is_logged_in() and not login_manually(driver):
+        print('User has not logged in')
+        return
 
-        try:
-            issue = issues_page.get_issue_by_id(id).go()
-            issue.comment(message, close)
+    repo_page = RepoPage(driver, repo_url).go()
+    issues_page = repo_page.go_to_issues().go()
 
-        except NoIssueWithIDException:
-            print('No issue found with specified ID')
+    try:
+        issue = issues_page.get_issue_by_id(id).go()
+        issue.comment(message, close)
+
+    except NoIssueWithIDException:
+        print('No issue found with specified ID')
 
 
 def main():
     arg_parser = create_parser()
     args = arg_parser.parse_args()
 
-    SITE_URL = 'https://www.github.com'
-    args.repo_url = f'{SITE_URL}/{config.DEFAULT_USER}/{config.DEFAULT_REPO}'
-    args.function(**vars(args))
+    with get_driver() as driver:
+        SITE_URL = 'https://www.github.com'
+        args.repo_url = f'{SITE_URL}/{args.user}/{args.repo}'
+        args.driver = driver
+        args.function(**vars(args))
 
 
 if __name__ == '__main__':
