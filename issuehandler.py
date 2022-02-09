@@ -41,8 +41,8 @@ def main():
 
         repo_page = RepoPage(driver, repo_url).go()
         issues_page = repo_page.go_to_issues().go()
-        issue = issues_page.get_issue_by_id(1).go()
-        issue.comment('wow so many(?) @special characters!! ###')
+        issue = issues_page.get_issue_by_id(2).go()
+        issue.comment('commenting on a new issue')
 
 
 if __name__ == '__main__':
