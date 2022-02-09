@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from issuespage import IssuesPage
@@ -7,13 +8,13 @@ class RepoPage:
         self.driver = driver
         self.repo_url = repo_url
 
-        self.issues_anchor = driver.find_element_by_id('issues-tab')
+    def go_to_page(self):
+        self.driver.get(self.repo_url)
+        self.find_elements()
 
-    @staticmethod
-    def go_to_repo(repo_url: str, driver: WebDriver):
-        driver.get(repo_url)
-        return RepoPage(driver, repo_url)
+    def find_elements(self):
+        self.issues_anchor = self.driver.find_element(By.ID, 'issues-tab')
 
     def go_to_issues(self) -> IssuesPage:
         self.issues_anchor.click()
-        return IssuesPage(self.driver)
+        return IssuesPage(self.driver, self.repo_url)

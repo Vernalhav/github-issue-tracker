@@ -1,3 +1,4 @@
+import time
 import config
 from selenium import webdriver
 from homepage import HomePage
@@ -10,9 +11,10 @@ from selenium.common.exceptions import TimeoutException
 
 def get_driver() -> WebDriver:
     service = Service(config.DRIVER_PATH)
-    options = webdriver.ChromeOptions()
 
+    options = webdriver.ChromeOptions()
     options.add_argument(f"--user-data-dir={config.BROWSER_USER_PATH}")
+
     driver = webdriver.Chrome(options=options, service=service)
     return driver
 
@@ -38,7 +40,11 @@ def main():
         if not home_page.is_logged_in() and not login_manually(driver):
             print('User has not logged in')
             return
-        
+
+        repo_page = RepoPage(driver, repo_url)
+        repo_page.go_to_page()
+
+        issues_page = repo_page.go_to_issues()
 
 
 if __name__ == '__main__':
