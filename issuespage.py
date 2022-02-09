@@ -1,3 +1,4 @@
+from __future__ import annotations
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -10,14 +11,15 @@ class NoIssueWithIDException(Exception):
     pass
 
 
-class IssuesPage():
+class IssuesPage:
     def __init__(self, driver: WebDriver, repo_url: str):
         self.driver = driver
         self.url = f'{repo_url}/issues'
 
-    def go_to_page(self):
+    def go(self) -> IssuesPage:
         self.driver.get(self.url)
         self.find_elements()
+        return self
 
     def find_elements(self):
         self.issue_search_box = self.driver.find_element(

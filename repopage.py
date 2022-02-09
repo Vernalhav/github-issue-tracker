@@ -1,3 +1,4 @@
+from __future__ import annotations
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -9,9 +10,10 @@ class RepoPage:
         self.driver = driver
         self.repo_url = repo_url
 
-    def go_to_page(self):
+    def go(self) -> RepoPage:
         self.driver.get(self.repo_url)
         self.find_elements()
+        return self
 
     def find_elements(self):
         self.issues_anchor = self.driver.find_element(By.ID, 'issues-tab')

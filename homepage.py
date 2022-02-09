@@ -1,3 +1,4 @@
+from __future__ import annotations
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
@@ -9,8 +10,9 @@ class HomePage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def go_to_page(self):
+    def go(self) -> HomePage:
         self.driver.get(HomePage.URL)
+        return self
 
     def is_logged_in(self) -> bool:
         '''

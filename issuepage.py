@@ -1,3 +1,4 @@
+from __future__ import annotations
 from selenium.webdriver.remote.webdriver import WebDriver
 
 
@@ -7,8 +8,9 @@ class IssuePage:
         self.id = id
         self.url = url
 
-    def go_to_page(self):
+    def go(self) -> IssuePage:
         self.driver.get(self.url)
+        return self
 
     def close(self):
         pass
