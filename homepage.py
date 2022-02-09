@@ -2,6 +2,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
+
 class HomePage:
     URL = 'https://github.com'
 
@@ -21,4 +22,3 @@ class HomePage:
             return False
         except NoSuchElementException:
             return True
-    

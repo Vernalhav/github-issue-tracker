@@ -3,6 +3,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from issuespage import IssuesPage
 
+
 class RepoPage:
     def __init__(self, driver: WebDriver, repo_url: str):
         self.driver = driver

@@ -1,4 +1,3 @@
-import time
 import config
 from selenium import webdriver
 from homepage import HomePage
@@ -22,7 +21,7 @@ def get_driver() -> WebDriver:
 def login_manually(driver: WebDriver) -> bool:
     login_page = LoginPage(driver)
     login_page.go_to_page()
-    
+
     try:
         login_page.wait_for_manual_login()
         return True
@@ -36,7 +35,7 @@ def main():
     with get_driver() as driver:
         home_page = HomePage(driver)
         home_page.go_to_page()
-        
+
         if not home_page.is_logged_in() and not login_manually(driver):
             print('User has not logged in')
             return
@@ -44,7 +43,7 @@ def main():
         repo_page = RepoPage(driver, repo_url)
         repo_page.go_to_page()
 
-        issues_page = repo_page.go_to_issues()
+        repo_page.go_to_issues()
 
 
 if __name__ == '__main__':
