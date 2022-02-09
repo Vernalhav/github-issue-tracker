@@ -64,7 +64,21 @@ def create_parser():
         action='store_true')
     parser_comment.set_defaults(function=comment_issue)
 
+    parser_open = subparsers.add_parser('open', help='Open a new issue')
+    parser_open.add_argument('--title', type=str, required=True)
+    parser_open.add_argument('--body', type=str, default='')
+    parser_open.set_defaults(function=open_issue)
+
     return parser
+
+
+def open_issue(repo_url: str, title: str,
+               body: str, driver: WebDriver,
+               **kwargs):
+    repo_page = RepoPage(driver, repo_url).go()
+    issues_page = repo_page.go_to_issues().go()
+    new_issue_page = issues_page.get_new_issue_page().go()
+    new_issue_page.open_new_issue(title, body)
 
 
 def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):

@@ -1,6 +1,6 @@
 from __future__ import annotations
-from selenium.webdriver import ActionChains
-from selenium.webdriver.remote.webdriver import WebDriver, WebElement
+from selenium.webdriver.remote.webdriver import WebDriver
+from utils import _safe_send_keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.common.exceptions import NoSuchElementException
@@ -31,7 +31,7 @@ class IssuePage:
         self.update_status()
 
         self.comment_box.clear()
-        self._safe_send_keys(self.comment_box, comment)
+        _safe_send_keys(self.driver, self.comment_box, comment)
 
         if close:
             self.close()
@@ -42,12 +42,6 @@ class IssuePage:
 
     def update_status(self):
         self._find_elements()
-
-    def _safe_send_keys(self, textbox: WebElement, text: str):
-        textbox.click()
-        action = ActionChains(self.driver)
-        action.send_keys(text)
-        action.perform()
 
     def _is_open(self) -> bool:
         try:

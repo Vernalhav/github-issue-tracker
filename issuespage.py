@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
 from issuepage import IssuePage
+from newissuepage import NewIssuePage
 
 
 class NoIssueWithIDException(Exception):
@@ -24,6 +25,9 @@ class IssuesPage:
     def find_elements(self):
         self.issue_search_box = self.driver.find_element(
             By.ID, 'js-issues-search')
+
+    def get_new_issue_page(self) -> NewIssuePage:
+        return NewIssuePage(self.driver, self.url)
 
     def get_issue_by_id(self, id: int) -> IssuePage:
         self.issue_search_box.clear()
