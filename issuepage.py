@@ -1,5 +1,6 @@
 from __future__ import annotations
-from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 
@@ -27,9 +28,15 @@ class IssuePage:
 
     def comment(self, comment: str, close=False):
         self.comment_box.clear()
-        self.comment_box.send_keys(comment)
+        self._safe_send_keys(self.comment_box, comment)
 
         if close:
             self.close()
         else:
             self.comment_button.click()
+
+    def _safe_send_keys(self, textbox: WebElement, text: str):
+        textbox.click()
+        action = ActionChains(self.driver)
+        action.send_keys(text)
+        action.perform()

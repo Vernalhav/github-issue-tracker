@@ -15,6 +15,7 @@ def get_driver() -> WebDriver:
     options.add_argument(f"--user-data-dir={config.BROWSER_USER_PATH}")
 
     driver = webdriver.Chrome(options=options, service=service)
+    driver.implicitly_wait(0.5)
     return driver
 
 
@@ -41,7 +42,7 @@ def main():
         repo_page = RepoPage(driver, repo_url).go()
         issues_page = repo_page.go_to_issues().go()
         issue = issues_page.get_issue_by_id(1).go()
-        issue.comment('wow this is cool')
+        issue.comment('wow so many(?) @special characters!! ###')
 
 
 if __name__ == '__main__':
