@@ -22,14 +22,21 @@ class IssuePage:
         if self.is_open:
             self.close_button.click()
 
-    def comment(self, comment: str, close=False):
+    def reopen(self):
+        self.update_status()
+        if not self.is_open:
+            self.reopen_button.click()
+
+    def comment(self, comment: str, close=False, reopen=False):
         self.update_status()
 
         self.comment_box.clear()
         self._safe_send_keys(self.comment_box, comment)
 
-        if self.is_open and close:
+        if close:
             self.close()
+        elif reopen:
+            self.reopen()
         else:
             self.comment_button.click()
 

@@ -54,8 +54,13 @@ def create_parser():
         '-m', '--message',
         type=str, help='Quote-delimited comment to add',
         required=True)
-    parser_comment.add_argument(
-        '-c', '--close', help='Set this to close the issue with the comment',
+    group = parser_comment.add_mutually_exclusive_group()
+    group.add_argument(
+        '-c', '--close', help='Set this to close the issue with acomment',
+        action='store_true')
+    group.add_argument(
+        '-o', '--reopen',
+        help='Set this to reopen the closed issue with a comment',
         action='store_true')
     parser_comment.set_defaults(function=comment_issue)
 
@@ -63,11 +68,6 @@ def create_parser():
 
 
 def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):
-    home_page = HomePage(driver).go()
-
-    if not home_page.is_logged_in() and not login_manually(driver):
-        print('User has not logged in')
-        return
 
     repo_page = RepoPage(driver, repo_url).go()
     issues_page = repo_page.go_to_issues().go()
@@ -78,7 +78,6 @@ def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):
         if not issue.is_open:
             print('Issue is already closed')
             return
-
         issue.close()
 
     except NoIssueWithIDException:
@@ -87,20 +86,15 @@ def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):
 
 def comment_issue(repo_url: str, id: int,
                   message: str, close: bool,
-                  driver: WebDriver, **kwargs):
-
-    home_page = HomePage(driver).go()
-
-    if not home_page.is_logged_in() and not login_manually(driver):
-        print('User has not logged in')
-        return
+                  reopen: bool, driver: WebDriver,
+                  **kwargs):
 
     repo_page = RepoPage(driver, repo_url).go()
     issues_page = repo_page.go_to_issues().go()
 
     try:
         issue = issues_page.get_issue_by_id(id).go()
-        issue.comment(message, close)
+        issue.comment(message, close, reopen)
 
     except NoIssueWithIDException:
         print('No issue found with specified ID')
@@ -114,6 +108,13 @@ def main():
         SITE_URL = 'https://www.github.com'
         args.repo_url = f'{SITE_URL}/{args.user}/{args.repo}'
         args.driver = driver
+
+        home_page = HomePage(driver).go()
+
+        if not home_page.is_logged_in() and not login_manually(driver):
+            print('User has not logged in')
+            return
+
         args.function(**vars(args))
 
 
