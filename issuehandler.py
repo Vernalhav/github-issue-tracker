@@ -43,7 +43,11 @@ def main():
         repo_page = RepoPage(driver, repo_url)
         repo_page.go_to_page()
 
-        repo_page.go_to_issues()
+        issues_page = repo_page.go_to_issues()
+        issues_page.go_to_page()
+
+        issue = issues_page.get_issue_by_id(1)
+        issue.go_to_page()
 
 
 if __name__ == '__main__':
