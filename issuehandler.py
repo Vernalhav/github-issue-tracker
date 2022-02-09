@@ -19,8 +19,7 @@ def get_driver() -> WebDriver:
 
 
 def login_manually(driver: WebDriver) -> bool:
-    login_page = LoginPage(driver)
-    login_page.go()
+    login_page = LoginPage(driver).go()
 
     try:
         login_page.wait_for_manual_login()
@@ -33,21 +32,17 @@ def main():
     repo_url = 'https://www.github.com/Vernalhav/github-issue-tracker'
 
     with get_driver() as driver:
-        home_page = HomePage(driver)
-        home_page.go()
+        home_page = HomePage(driver).go()
 
         if not home_page.is_logged_in() and not login_manually(driver):
             print('User has not logged in')
             return
 
-        repo_page = RepoPage(driver, repo_url)
-        repo_page.go()
+        repo_page = RepoPage(driver, repo_url).go()
 
-        issues_page = repo_page.go_to_issues()
-        issues_page.go()
+        issues_page = repo_page.go_to_issues().go()
 
-        issue = issues_page.get_issue_by_id(1)
-        issue.go()
+        issues_page.get_issue_by_id(1).go()
 
 
 if __name__ == '__main__':
