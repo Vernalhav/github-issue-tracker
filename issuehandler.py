@@ -75,6 +75,7 @@ def create_parser():
 def open_issue(repo_url: str, title: str,
                body: str, driver: WebDriver,
                **kwargs):
+
     repo_page = RepoPage(driver, repo_url).go()
     issues_page = repo_page.go_to_issues().go()
     new_issue_page = issues_page.get_new_issue_page().go()
@@ -82,7 +83,6 @@ def open_issue(repo_url: str, title: str,
 
 
 def close_issue(repo_url: str, id: int, driver: WebDriver, **kwargs):
-
     repo_page = RepoPage(driver, repo_url).go()
     issues_page = repo_page.go_to_issues().go()
 
