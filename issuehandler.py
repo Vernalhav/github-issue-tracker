@@ -45,6 +45,9 @@ def create_parser():
     parser.add_argument(
         '--pdf', help='Whether to generate a PDF file with screenshots',
         action='store_true', dest='take_screenshots')
+    parser.add_argument('-v', '--verbosity',
+                        help='Set screenshot verbosity level',
+                        type=int, choices=[1, 2, 3], default=3)
     subparsers = parser.add_subparsers(required=True, title='Operation')
 
     parser_close = subparsers.add_parser('close', help='Closes an issue')
@@ -53,7 +56,7 @@ def create_parser():
     parser_close.set_defaults(function=close_issue)
 
     parser_comment = subparsers.add_parser(
-        'comment', help='Add comment to issue')
+        'comment', help='Adds comment to issue')
     parser_comment.add_argument(
         'id', type=int, help='GitHub ID of the issue')
     parser_comment.add_argument(
@@ -70,7 +73,7 @@ def create_parser():
         action='store_true')
     parser_comment.set_defaults(function=comment_issue)
 
-    parser_open = subparsers.add_parser('open', help='Open a new issue')
+    parser_open = subparsers.add_parser('open', help='Opens a new issue')
     parser_open.add_argument('--title', type=str, required=True)
     parser_open.add_argument('--body', type=str, default='')
     parser_open.set_defaults(function=open_issue)
@@ -125,6 +128,7 @@ def main():
     args = arg_parser.parse_args()
 
     SeleniumScreenshotter.take_screenshots = args.take_screenshots
+    SeleniumScreenshotter.verbosity_level = args.verbosity
 
     with get_driver() as driver:
         SITE_URL = 'https://www.github.com'
@@ -140,8 +144,8 @@ def main():
         args.function(**vars(args))
 
     if args.take_screenshots:
-        SeleniumScreenshotter.save_pdf(
-            f'{config.PDF_DIR}/{datetime.now().isoformat()}.pdf')
+        pdf_name = datetime.now().strftime('%Y-%m-%dT%Hh%Mm%Ss')
+        SeleniumScreenshotter.save_pdf(f'{config.PDF_DIR}/{pdf_name}.pdf')
 
 
 if __name__ == '__main__':
