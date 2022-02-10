@@ -13,23 +13,21 @@ class IssuePage:
         self.id = id
         self.url = url
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after(verbosity=2)
     def go(self) -> IssuePage:
         self.driver.get(self.url)
         self._find_elements()
         return self
 
+    @SeleniumScreenshotter.screenshot_after()
     def close(self):
-        self.update_status()
-        if self.is_open:
-            self.close_button.click()
+        self._close()
 
+    @SeleniumScreenshotter.screenshot_after()
     def reopen(self):
-        self.update_status()
-        if not self.is_open:
-            self.reopen_button.click()
+        self._reopen()
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after()
     def comment(self, comment: str, close=False, reopen=False):
         self.update_status()
 
@@ -37,14 +35,27 @@ class IssuePage:
         safe_send_keys(self.driver, self.comment_box, comment)
 
         if close:
-            self.close()
+            self._close()
         elif reopen:
-            self.reopen()
+            self._reopen()
         else:
-            self.comment_button.click()
+            self._comment()
 
     def update_status(self):
         self._find_elements()
+
+    def _comment(self):
+        self.comment_button.click()
+
+    def _close(self):
+        self.update_status()
+        if self.is_open:
+            self.close_button.click()
+
+    def _reopen(self):
+        self.update_status()
+        if not self.is_open:
+            self.reopen_button.click()
 
     def _is_open(self) -> bool:
         try:

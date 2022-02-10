@@ -25,38 +25,42 @@ class SeleniumScreenshotter:
     output_path = Path(config.SCREENSHOTS_DIR)
 
     @staticmethod
-    def screenshot_after(
-        f: Callable[Concatenate[PageObject, P], T],
-        verbosity=1,
-    ) -> Callable[Concatenate[PageObject, P], T]:
-        '''
-        This function should be used to decorate a method
-        from a PageObject-like class (meaning it has a driver
-        attribute).
-        It will take a screenshot from the driver after the method
-        has finished executing, and will save it to output_path.
-        '''
+    def screenshot_after(verbosity=1):
 
-        def wrapped_method(self: PageObject,
-                           *args: P.args,
-                           **kwargs: P.kwargs) -> T:
+        def _screenshot_after(
+            f: Callable[Concatenate[PageObject, P], T],
+        ) -> Callable[Concatenate[PageObject, P], T]:
+            '''
+            This function should be used to decorate a method
+            from a PageObject-like class (meaning it has a driver
+            attribute).
+            It will take a screenshot from the driver after the method
+            has finished executing, and will save it to output_path.
+            '''
 
-            result = f(self, *args, **kwargs)
-            if (SeleniumScreenshotter.take_screenshots
-                    and SeleniumScreenshotter.verbosity_level >= verbosity):
+            def wrapped_method(self: PageObject,
+                               *args: P.args,
+                               **kwargs: P.kwargs) -> T:
 
-                filename = f'{datetime.now().isoformat()}.png'
-                filepath = str(SeleniumScreenshotter.output_path / filename)
+                result = f(self, *args, **kwargs)
+                if (SeleniumScreenshotter.take_screenshots
+                        and SeleniumScreenshotter.verbosity_level
+                        >= verbosity):
 
-                # If directory doesn't exist, create it and try again
-                if not self.driver.save_screenshot(filepath):
-                    SeleniumScreenshotter.output_path.mkdir(
-                        parents=True, exist_ok=True)
-                    self.driver.save_screenshot(filepath)
+                    filename = f'{datetime.now().isoformat()}.png'
+                    filepath = str(
+                        SeleniumScreenshotter.output_path / filename)
 
-            return result
+                    # If directory doesn't exist, create it and try again
+                    if not self.driver.save_screenshot(filepath):
+                        SeleniumScreenshotter.output_path.mkdir(
+                            parents=True, exist_ok=True)
+                        self.driver.save_screenshot(filepath)
 
-        return wrapped_method
+                return result
+
+            return wrapped_method
+        return _screenshot_after
 
     @staticmethod
     def save_pdf(name: str):

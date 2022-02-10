@@ -18,7 +18,7 @@ class IssuesPage:
         self.driver = driver
         self.url = f'{repo_url}/issues'
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after(verbosity=2)
     def go(self) -> IssuesPage:
         self.driver.get(self.url)
         self.find_elements()
@@ -31,7 +31,7 @@ class IssuesPage:
     def get_new_issue_page(self) -> NewIssuePage:
         return NewIssuePage(self.driver, self.url)
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after()
     def get_issue_by_id(self, id: int) -> IssuePage:
         self.issue_search_box.clear()
         self.issue_search_box.send_keys(Keys.RETURN)

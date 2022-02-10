@@ -12,7 +12,7 @@ class HomePage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after(verbosity=3)
     def go(self) -> HomePage:
         self.driver.get(HomePage.URL)
         return self

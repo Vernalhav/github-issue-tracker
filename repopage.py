@@ -11,7 +11,7 @@ class RepoPage:
         self.driver = driver
         self.repo_url = repo_url
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after(verbosity=2)
     def go(self) -> RepoPage:
         self.driver.get(self.repo_url)
         self.find_elements()
