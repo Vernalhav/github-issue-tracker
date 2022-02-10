@@ -3,3 +3,5 @@ test-profile/
 __pycache__/
 .vscode/
 screenshots/
+pdfs/
+.DS_Store
