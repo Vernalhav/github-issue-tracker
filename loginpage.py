@@ -17,4 +17,4 @@ class LoginPage:
         return self
 
     def wait_for_manual_login(self):
-        WebDriverWait(self.driver, 20).until(EC.url_to_be(HomePage.URL + '/'))
+        WebDriverWait(self.driver, 60).until(EC.url_to_be(HomePage.URL + '/'))
