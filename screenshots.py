@@ -56,7 +56,9 @@ class SeleniumScreenshotter:
 
     @staticmethod
     def save_pdf(name: str):
-        image_paths = glob.glob(f'{SeleniumScreenshotter.output_path}/*.png')
+        image_paths = sorted(glob.glob(
+            f'{SeleniumScreenshotter.output_path}/*.png'))
+
         if len(image_paths) == 0:
             print(f'No images in {SeleniumScreenshotter.output_path}')
             return
@@ -69,7 +71,3 @@ class SeleniumScreenshotter:
                          append_images=other_images)
 
         shutil.rmtree(SeleniumScreenshotter.output_path)
-
-
-if __name__ == '__main__':
-    SeleniumScreenshotter.save_pdf('./pdfs/test.pdf')
