@@ -21,11 +21,13 @@ class PageObject(Protocol):
 
 class SeleniumScreenshotter:
     take_screenshots = True
+    verbosity_level = 1
     output_path = Path(config.SCREENSHOTS_DIR)
 
     @staticmethod
     def screenshot_after(
-        f: Callable[Concatenate[PageObject, P], T]
+        f: Callable[Concatenate[PageObject, P], T],
+        verbosity=1,
     ) -> Callable[Concatenate[PageObject, P], T]:
         '''
         This function should be used to decorate a method
@@ -40,7 +42,9 @@ class SeleniumScreenshotter:
                            **kwargs: P.kwargs) -> T:
 
             result = f(self, *args, **kwargs)
-            if SeleniumScreenshotter.take_screenshots:
+            if (SeleniumScreenshotter.take_screenshots
+                    and SeleniumScreenshotter.verbosity_level >= verbosity):
+
                 filename = f'{datetime.now().isoformat()}.png'
                 filepath = str(SeleniumScreenshotter.output_path / filename)
 
