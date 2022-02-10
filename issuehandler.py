@@ -1,3 +1,4 @@
+from datetime import datetime
 import config
 from selenium import webdriver
 from homepage import HomePage
@@ -8,6 +9,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 import argparse
+
+from screenshots import SeleniumScreenshotter
 
 
 def get_driver() -> WebDriver:
@@ -39,6 +42,9 @@ def create_parser():
     parser.add_argument(
         '--repo', help='Name of the GitHub repository',
         default=config.DEFAULT_REPO)
+    parser.add_argument(
+        '--pdf', help='Whether to generate a PDF file with screenshots',
+        action='store_true', dest='take_screenshots')
     subparsers = parser.add_subparsers(required=True, title='Operation')
 
     parser_close = subparsers.add_parser('close', help='Closes an issue')
@@ -118,6 +124,8 @@ def main():
     arg_parser = create_parser()
     args = arg_parser.parse_args()
 
+    SeleniumScreenshotter.take_screenshots = args.take_screenshots
+
     with get_driver() as driver:
         SITE_URL = 'https://www.github.com'
         args.repo_url = f'{SITE_URL}/{args.user}/{args.repo}'
@@ -130,6 +138,10 @@ def main():
             return
 
         args.function(**vars(args))
+
+    if args.take_screenshots:
+        SeleniumScreenshotter.save_pdf(
+            f'{config.PDF_DIR}/{datetime.now().isoformat()}.pdf')
 
 
 if __name__ == '__main__':
