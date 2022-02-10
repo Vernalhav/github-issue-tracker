@@ -1,6 +1,6 @@
 from __future__ import annotations
 from selenium.webdriver.remote.webdriver import WebDriver
-from utils import _safe_send_keys
+from utils import safe_send_keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
 from selenium.common.exceptions import NoSuchElementException
@@ -31,7 +31,7 @@ class IssuePage:
         self.update_status()
 
         self.comment_box.clear()
-        _safe_send_keys(self.driver, self.comment_box, comment)
+        safe_send_keys(self.driver, self.comment_box, comment)
 
         if close:
             self.close()

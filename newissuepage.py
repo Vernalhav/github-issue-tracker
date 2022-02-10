@@ -3,7 +3,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils import _safe_send_keys
+from utils import safe_send_keys
 
 
 class NewIssuePage:
@@ -26,8 +26,8 @@ class NewIssuePage:
     def open_new_issue(self, title: str, body: str):
         self.issue_body_box.clear()
         self.issue_title_bpx.clear()
-        _safe_send_keys(self.driver, self.issue_title_bpx, title)
-        _safe_send_keys(self.driver, self.issue_body_box, body)
+        safe_send_keys(self.driver, self.issue_title_bpx, title)
+        safe_send_keys(self.driver, self.issue_body_box, body)
 
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(self.new_issue_button))
