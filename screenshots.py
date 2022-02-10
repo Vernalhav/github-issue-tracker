@@ -26,17 +26,17 @@ class SeleniumScreenshotter:
 
     @staticmethod
     def screenshot_after(verbosity=1):
+        '''
+        This function should be used to decorate a method
+        from a PageObject-like class (meaning it has a driver
+        attribute).
+        It will take a screenshot from the driver after the method
+        has finished executing, and will save it to output_path.
+        '''
 
         def _screenshot_after(
             f: Callable[Concatenate[PageObject, P], T],
         ) -> Callable[Concatenate[PageObject, P], T]:
-            '''
-            This function should be used to decorate a method
-            from a PageObject-like class (meaning it has a driver
-            attribute).
-            It will take a screenshot from the driver after the method
-            has finished executing, and will save it to output_path.
-            '''
 
             def wrapped_method(self: PageObject,
                                *args: P.args,
@@ -60,6 +60,7 @@ class SeleniumScreenshotter:
                 return result
 
             return wrapped_method
+
         return _screenshot_after
 
     @staticmethod
