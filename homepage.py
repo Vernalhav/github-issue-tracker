@@ -3,6 +3,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
+from screenshots import SeleniumScreenshotter
+
 
 class HomePage:
     URL = 'https://github.com'
@@ -10,6 +12,7 @@ class HomePage:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
+    @SeleniumScreenshotter.screenshot_after
     def go(self) -> HomePage:
         self.driver.get(HomePage.URL)
         return self

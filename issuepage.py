@@ -1,5 +1,6 @@
 from __future__ import annotations
 from selenium.webdriver.remote.webdriver import WebDriver
+from screenshots import SeleniumScreenshotter
 from utils import safe_send_keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
@@ -12,6 +13,7 @@ class IssuePage:
         self.id = id
         self.url = url
 
+    @SeleniumScreenshotter.screenshot_after
     def go(self) -> IssuePage:
         self.driver.get(self.url)
         self._find_elements()
@@ -27,6 +29,7 @@ class IssuePage:
         if not self.is_open:
             self.reopen_button.click()
 
+    @SeleniumScreenshotter.screenshot_after
     def comment(self, comment: str, close=False, reopen=False):
         self.update_status()
 

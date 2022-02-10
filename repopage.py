@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from issuespage import IssuesPage
+from screenshots import SeleniumScreenshotter
 
 
 class RepoPage:
@@ -10,6 +11,7 @@ class RepoPage:
         self.driver = driver
         self.repo_url = repo_url
 
+    @SeleniumScreenshotter.screenshot_after
     def go(self) -> RepoPage:
         self.driver.get(self.repo_url)
         self.find_elements()
