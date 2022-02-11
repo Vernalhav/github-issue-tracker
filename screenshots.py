@@ -1,5 +1,6 @@
 import shutil
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.common.exceptions import WebDriverException
 from typing import Concatenate, Protocol, Callable, TypeVar, ParamSpec
 from pathlib import Path
 from datetime import datetime
@@ -25,6 +26,18 @@ class SeleniumScreenshotter:
     output_path = Path(config.SCREENSHOTS_DIR)
 
     @staticmethod
+    def take_screenshot(driver: WebDriver):
+        filename = f'{datetime.now().isoformat()}.png'
+        filepath = str(
+            SeleniumScreenshotter.output_path / filename)
+
+        # If directory doesn't exist, create it and try again
+        if not driver.save_screenshot(filepath):
+            SeleniumScreenshotter.output_path.mkdir(
+                parents=True, exist_ok=True)
+            driver.save_screenshot(filepath)
+
+    @staticmethod
     def screenshot_after(verbosity=1):
         '''
         This function should be used to decorate a method
@@ -42,22 +55,17 @@ class SeleniumScreenshotter:
                                *args: P.args,
                                **kwargs: P.kwargs) -> T:
 
-                result = f(self, *args, **kwargs)
-                if (SeleniumScreenshotter.take_screenshots
-                        and SeleniumScreenshotter.verbosity_level
-                        >= verbosity):
+                try:
+                    result = f(self, *args, **kwargs)
+                    if (SeleniumScreenshotter.take_screenshots
+                            and SeleniumScreenshotter.verbosity_level
+                            >= verbosity):
+                        SeleniumScreenshotter.take_screenshot()
+                    return result
 
-                    filename = f'{datetime.now().isoformat()}.png'
-                    filepath = str(
-                        SeleniumScreenshotter.output_path / filename)
-
-                    # If directory doesn't exist, create it and try again
-                    if not self.driver.save_screenshot(filepath):
-                        SeleniumScreenshotter.output_path.mkdir(
-                            parents=True, exist_ok=True)
-                        self.driver.save_screenshot(filepath)
-
-                return result
+                except WebDriverException as e:
+                    SeleniumScreenshotter.take_screenshot()
+                    raise e
 
             return wrapped_method
 
