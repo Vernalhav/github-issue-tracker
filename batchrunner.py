@@ -5,6 +5,7 @@ import issuehandler
 from typing import Protocol, Callable
 import pandas as pd
 
+MAIN_PROGRAM_NAME = 'issuehandler.py'
 OPEN_SHEET_NAME = 'open'
 CLOSE_SHEET_NAME = 'close'
 COMMENT_SHEET_NAME = 'comment'
@@ -12,26 +13,61 @@ COMMENT_SHEET_NAME = 'comment'
 CommandLineArguments = list[str]
 
 
+class MissingRequiredFieldException(Exception):
+    field: str
+    row: str
+    sheet_name: str
+    file_name: str
+
+    def __init__(self, field: str, row=-1, sheet_name='', file_name=''):
+        super().__init__(
+            f'{file_name} in sheet {sheet_name}: '
+            + f'missing required field {field} at row {row}')
+
+
 class BatchCommandParserArgs(Protocol):
     filename: str
     sheet_name: str
-    parsing_strategy: Callable[[pd.DataFrame], list[CommandLineArguments]]
+    parsing_strategy: Callable[[pd.Series], CommandLineArguments]
 
 
-def batch_close_parser(df: pd.DataFrame) -> list[CommandLineArguments]:
-    pass
+def batch_close_parser(row: pd.Series) -> CommandLineArguments:
+    cli_options = ['close']
+
+    if pd.isna(row['Issue ID']):
+        raise MissingRequiredFieldException('Issue ID')
+
+    cli_options += [row['Issue ID']]
+    return cli_options
 
 
-def batch_open_parser(df: pd.DataFrame) -> list[CommandLineArguments]:
-    pass
+def batch_open_parser(row: pd.Series) -> CommandLineArguments:
+    cli_options = ['open']
+
+    if pd.isna(row['Title']) or row['Title'] == '':
+        raise MissingRequiredFieldException('Title')
+
+    return cli_options
 
 
-def batch_comment_parser(df: pd.DataFrame) -> list[CommandLineArguments]:
-    pass
+def batch_comment_parser(row: pd.Series) -> CommandLineArguments:
+    cli_options = ['comment']
+    return cli_options
 
 
-def batch_common_parser(df: pd.DataFrame) -> list[CommandLineArguments]:
-    pass
+def batch_common_parser(row: pd.Series) -> CommandLineArguments:
+    cli_options = [MAIN_PROGRAM_NAME]
+
+    if not pd.isna(row['Repo owner']):
+        cli_options += ['--user', row['Repo owner']]
+
+    if not pd.isna(row['Repo name']):
+        cli_options += ['--repo', row['Repo name']]
+
+    if not pd.isna(row['Verbosity']) and row['Verbosity'] > 0:
+        cli_options += ['--pdf', '--verbosity', int(row['Verbosity'])]
+
+    return cli_options
 
 
 def create_parser():
@@ -71,12 +107,22 @@ def parse_commands_from_excel(
 
     df = pd.read_excel(args.filename, sheet_name=args.sheet_name)
 
-    cli_options = batch_common_parser(df)
-    cli_options += args.parsing_strategy(df)
+    commands = []
+    for row_id, row in df.iterrows():
+        try:
+            cli_options = batch_common_parser(row)
+            cli_options += args.parsing_strategy(row)
+            commands.append(cli_options)
+        except MissingRequiredFieldException as e:
+            raise MissingRequiredFieldException(
+                field=e.field,
+                row=str(row_id),
+                sheet_name=args.sheet_name,
+                file_name=args.filename)
 
     issuehandler_parser = issuehandler.create_parser()
-    return [issuehandler_parser.parse_args(cli_option)
-            for cli_option in cli_options]
+    return [issuehandler_parser.parse_args(command)
+            for command in commands]
 
 
 def main():
