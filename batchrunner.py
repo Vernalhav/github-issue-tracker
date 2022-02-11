@@ -20,6 +20,10 @@ class MissingRequiredFieldException(Exception):
     file_name: str
 
     def __init__(self, field: str, row=-1, sheet_name='', file_name=''):
+        self.field = field
+        self.row = row
+        self.sheet_name = sheet_name
+        self.file_name = file_name
         super().__init__(
             f'{file_name} in sheet {sheet_name}: '
             + f'missing required field {field} at row {row}')
