@@ -148,6 +148,7 @@ def main():
     arg_parser = create_parser()
     args = arg_parser.parse_args()
 
+    driver: WebDriver
     with get_driver() as driver:
         run(driver, args)
 
