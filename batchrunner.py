@@ -10,7 +10,7 @@ OPEN_SHEET_NAME = 'open'
 CLOSE_SHEET_NAME = 'close'
 COMMENT_SHEET_NAME = 'comment'
 
-CommandLineArguments = list[str]
+CommandLineArguments = list[str | int]
 
 
 class MissingRequiredFieldException(Exception):
@@ -34,37 +34,57 @@ class BatchCommandParserArgs(Protocol):
 def batch_close_parser(row: pd.Series) -> CommandLineArguments:
     cli_options = ['close']
 
-    if pd.isna(row['Issue ID']):
+    if row.isna()['Issue ID']:
         raise MissingRequiredFieldException('Issue ID')
 
-    cli_options += [row['Issue ID']]
+    cli_options.append(row['Issue ID'])
     return cli_options
 
 
 def batch_open_parser(row: pd.Series) -> CommandLineArguments:
     cli_options = ['open']
 
-    if pd.isna(row['Title']) or row['Title'] == '':
+    if row.isna()['Title'] or len(row['Title']) == 0:
         raise MissingRequiredFieldException('Title')
+
+    cli_options += ['--title', row['Title']]
+
+    if not row.isna()['Body'] and len(row['Body']) > 0:
+        cli_options += ['--body', row['Body']]
 
     return cli_options
 
 
 def batch_comment_parser(row: pd.Series) -> CommandLineArguments:
     cli_options = ['comment']
+
+    if row.isna()['Issue ID']:
+        raise MissingRequiredFieldException('Issue ID')
+
+    cli_options.append(row['Issue ID'])
+
+    if row.isna()['Comment'] or len(row['Comment']) == 0:
+        raise MissingRequiredFieldException('Comment')
+
+    cli_options += ['--message', row['Comment']]
+
+    if not row.isna()['Action'] and len(row['Action']) > 0:
+        actions = {'Close': '--close', 'Reopen': '--reopen'}
+        cli_options.append(actions[row['Action']])
+
     return cli_options
 
 
 def batch_common_parser(row: pd.Series) -> CommandLineArguments:
-    cli_options = [MAIN_PROGRAM_NAME]
+    cli_options = []
 
-    if not pd.isna(row['Repo owner']):
+    if not row.isna()['Repo owner']:
         cli_options += ['--user', row['Repo owner']]
 
-    if not pd.isna(row['Repo name']):
+    if not row.isna()['Repo name']:
         cli_options += ['--repo', row['Repo name']]
 
-    if not pd.isna(row['Verbosity']) and row['Verbosity'] > 0:
+    if not row.isna()['Verbosity'] and row['Verbosity'] > 0:
         cli_options += ['--pdf', '--verbosity', int(row['Verbosity'])]
 
     return cli_options
@@ -112,7 +132,8 @@ def parse_commands_from_excel(
         try:
             cli_options = batch_common_parser(row)
             cli_options += args.parsing_strategy(row)
-            commands.append(cli_options)
+            commands.append([str(option) for option in cli_options])
+
         except MissingRequiredFieldException as e:
             raise MissingRequiredFieldException(
                 field=e.field,
@@ -135,6 +156,7 @@ def main():
     with issuehandler.get_driver() as driver:
         for command in commands:
             issuehandler.run(driver, command)
+            driver.switch_to.new_window('tab')
 
 
 if __name__ == '__main__':
