@@ -5,6 +5,8 @@ import issuehandler
 from typing import Protocol, Callable
 import pandas as pd
 
+from utils import switch_tab_and_close_previous
+
 MAIN_PROGRAM_NAME = 'issuehandler.py'
 OPEN_SHEET_NAME = 'open'
 CLOSE_SHEET_NAME = 'close'
@@ -160,7 +162,7 @@ def main():
     with issuehandler.get_driver() as driver:
         for command in commands:
             issuehandler.run(driver, command)
-            driver.switch_to.new_window('tab')
+            switch_tab_and_close_previous(driver)
 
 
 if __name__ == '__main__':
