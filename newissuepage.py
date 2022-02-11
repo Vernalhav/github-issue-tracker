@@ -12,7 +12,7 @@ class NewIssuePage:
         self.driver = driver
         self.url = f'{issues_page_url}/new'
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after()
     def go(self) -> NewIssuePage:
         self.driver.get(self.url)
         self.find_elements()
@@ -25,7 +25,7 @@ class NewIssuePage:
         self.new_issue_button = self.driver.find_element(
             By.XPATH, '//button[normalize-space()="Submit new issue"]')
 
-    @SeleniumScreenshotter.screenshot_after
+    @SeleniumScreenshotter.screenshot_after()
     def open_new_issue(self, title: str, body: str):
         self.issue_body_box.clear()
         self.issue_title_bpx.clear()
