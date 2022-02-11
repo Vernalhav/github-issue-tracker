@@ -5,3 +5,4 @@ __pycache__/
 screenshots/
 pdfs/
 .DS_Store
+**/~$*
