@@ -123,29 +123,33 @@ def comment_issue(repo_url: str, id: int,
         print('No issue found with specified ID')
 
 
-def main():
-    arg_parser = create_parser()
-    args = arg_parser.parse_args()
-
+def run(driver: WebDriver, args: argparse.Namespace):
     SeleniumScreenshotter.take_screenshots = args.take_screenshots
     SeleniumScreenshotter.verbosity_level = args.verbosity
 
-    with get_driver() as driver:
-        SITE_URL = 'https://www.github.com'
-        args.repo_url = f'{SITE_URL}/{args.user}/{args.repo}'
-        args.driver = driver
+    SITE_URL = 'https://www.github.com'
+    args.repo_url = f'{SITE_URL}/{args.user}/{args.repo}'
+    args.driver = driver
 
-        home_page = HomePage(driver).go()
+    home_page = HomePage(driver).go()
 
-        if not home_page.is_logged_in() and not login_manually(driver):
-            print('User has not logged in')
-            return
+    if not home_page.is_logged_in() and not login_manually(driver):
+        print('User has not logged in')
+        return
 
-        args.function(**vars(args))
+    args.function(**vars(args))
 
     if args.take_screenshots:
         pdf_name = datetime.now().strftime('%Y-%m-%dT%Hh%Mm%Ss')
         SeleniumScreenshotter.save_pdf(f'{config.PDF_DIR}/{pdf_name}.pdf')
+
+
+def main():
+    arg_parser = create_parser()
+    args = arg_parser.parse_args()
+
+    with get_driver() as driver:
+        run(driver, args)
 
 
 if __name__ == '__main__':
