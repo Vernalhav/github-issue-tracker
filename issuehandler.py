@@ -50,20 +50,20 @@ def create_parser():
                         type=int, choices=[1, 2, 3], default=3)
     subparsers = parser.add_subparsers(required=True, title='Operation')
 
-    parser_close = subparsers.add_parser('close', help='Closes an issue')
-    parser_close.add_argument(
+    close_parser = subparsers.add_parser('close', help='Closes an issue')
+    close_parser.add_argument(
         'id', type=int, help='GitHub ID of the issue to be closed')
-    parser_close.set_defaults(function=close_issue)
+    close_parser.set_defaults(function=close_issue)
 
-    parser_comment = subparsers.add_parser(
+    comment_parser = subparsers.add_parser(
         'comment', help='Adds comment to issue')
-    parser_comment.add_argument(
+    comment_parser.add_argument(
         'id', type=int, help='GitHub ID of the issue')
-    parser_comment.add_argument(
+    comment_parser.add_argument(
         '-m', '--message',
         type=str, help='Quote-delimited comment to add',
         required=True)
-    group = parser_comment.add_mutually_exclusive_group()
+    group = comment_parser.add_mutually_exclusive_group()
     group.add_argument(
         '-c', '--close', help='Set this to close the issue with acomment',
         action='store_true')
@@ -71,12 +71,12 @@ def create_parser():
         '-o', '--reopen',
         help='Set this to reopen the closed issue with a comment',
         action='store_true')
-    parser_comment.set_defaults(function=comment_issue)
+    comment_parser.set_defaults(function=comment_issue)
 
-    parser_open = subparsers.add_parser('open', help='Opens a new issue')
-    parser_open.add_argument('--title', type=str, required=True)
-    parser_open.add_argument('--body', type=str, default='')
-    parser_open.set_defaults(function=open_issue)
+    open_parser = subparsers.add_parser('open', help='Opens a new issue')
+    open_parser.add_argument('--title', type=str, required=True)
+    open_parser.add_argument('--body', type=str, default='')
+    open_parser.set_defaults(function=open_issue)
 
     return parser
 
