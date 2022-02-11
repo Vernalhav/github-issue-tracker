@@ -5,7 +5,7 @@ from selenium.common.exceptions import WebDriverException
 from typing import Concatenate, Protocol, Callable, TypeVar, ParamSpec
 from pathlib import Path
 from datetime import datetime
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import config
 
 # Return type of the decorated method
@@ -91,13 +91,26 @@ class SeleniumScreenshotter:
             print(f'No images in {SeleniumScreenshotter.output_path}')
             return
 
-        first_image, *other_images = [Image.open(image.path).convert('RGB')
-                                      for image
-                                      in SeleniumScreenshotter.screenshots]
-
         Path(name).parent.mkdir(parents=True, exist_ok=True)
+
+        first_image, *other_images = [
+            _image_from_metadata(screenshot) for screenshot
+            in SeleniumScreenshotter.screenshots]
+
         first_image.save(name, 'PDF', save_all=True,
                          append_images=other_images)
 
         shutil.rmtree(SeleniumScreenshotter.output_path)
         SeleniumScreenshotter.screenshots = []
+
+
+def _image_from_metadata(screenshot: Screenshot) -> Image:
+    image = Image.open(screenshot.path).convert('RGB')
+
+    if screenshot.exception_occurred:
+        draw = ImageDraw.Draw(image)
+        font = ImageFont.load_default()
+        text_w, text_h = font.getsize(screenshot.exception_name)
+        draw.rectangle((0, 0, text_w, text_h), fill='red')
+
+    return image
