@@ -6,11 +6,11 @@ and run:
 ```bash
 $ pip install -r requirements.txt
 ```
-Note: Python >= 3.10 is required.
+**Note:** `Python >= 3.10` is required.
 
 ## Usage
-It is recommended to run this module from the directory containing the `setup.py` file, 
-since the PDFs and Chrome user profile will be created from wherever you invoke the script.
+You can run this module from any directory, but note that the PDF files
+will be saved to the current directory in `./pdfs/` 
 ```bash
 $ python3 -m issuehandler.issuehandler [CLI options...]
 ```
