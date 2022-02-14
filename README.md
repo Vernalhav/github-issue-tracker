@@ -12,7 +12,7 @@ $ pip install -r requirements.txt
 You can run this module from any directory, but note that the PDF files
 will be saved to the current directory in `./pdfs/` 
 ```bash
-$ python3 -m issuehandler.issuehandler [CLI options...]
+$ python3 -m issuehandler [CLI options...]
 ```
 or
 ```bash
