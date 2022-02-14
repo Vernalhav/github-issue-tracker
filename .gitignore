@@ -6,3 +6,4 @@ screenshots/
 pdfs/
 .DS_Store
 **/~$*
+*.egg-info

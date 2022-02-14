@@ -1,12 +1,14 @@
 from __future__ import annotations
-from selenium.webdriver.remote.webdriver import WebDriver
+
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.remote.webdriver import WebDriver
 
-from issuepage import IssuePage
-from newissuepage import NewIssuePage
-from screenshots import SeleniumScreenshotter
+from issuehandler.screenshots import SeleniumScreenshotter
+
+from .issuepage import IssuePage
+from .newissuepage import NewIssuePage
 
 
 class NoIssueWithIDException(Exception):

@@ -1,10 +1,12 @@
 from __future__ import annotations
-from selenium.webdriver.remote.webdriver import WebDriver
-from screenshots import SeleniumScreenshotter
-from utils import safe_send_keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.relative_locator import locate_with
+
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.relative_locator import locate_with
+
+from issuehandler.screenshots import SeleniumScreenshotter
+from issuehandler.utils import safe_send_keys
 
 
 class IssuePage:

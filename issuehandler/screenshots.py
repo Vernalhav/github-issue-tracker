@@ -1,12 +1,14 @@
-from dataclasses import dataclass
 import shutil
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.common.exceptions import WebDriverException
-from typing import Concatenate, Protocol, Callable, TypeVar, ParamSpec
-from pathlib import Path
+from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Callable, Concatenate, ParamSpec, Protocol, TypeVar
+
 from PIL import Image, ImageDraw, ImageFont
-import config
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.remote.webdriver import WebDriver
+
+import issuehandler.config as config
 
 # Return type of the decorated method
 T = TypeVar('T')

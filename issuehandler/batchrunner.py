@@ -1,11 +1,13 @@
 import argparse
 import warnings
-from selenium.webdriver.remote.webdriver import WebDriver
-import issuehandler
-from typing import Protocol, Callable
-import pandas as pd
+from typing import Callable, Protocol
 
-from utils import switch_tab_and_close_previous
+import pandas as pd
+from selenium.webdriver.remote.webdriver import WebDriver
+
+from issuehandler.utils import switch_tab_and_close_previous
+
+from . import issuehandler
 
 MAIN_PROGRAM_NAME = 'issuehandler.py'
 OPEN_SHEET_NAME = 'open'

@@ -1,9 +1,10 @@
 from __future__ import annotations
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 
-from screenshots import SeleniumScreenshotter
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+
+from issuehandler.screenshots import SeleniumScreenshotter
 
 
 class HomePage:

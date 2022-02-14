@@ -1,16 +1,15 @@
+import argparse
 from datetime import datetime
-import config
+
 from selenium import webdriver
-from homepage import HomePage
-from issuespage import NoIssueWithIDException
-from loginpage import LoginPage
-from repopage import RepoPage
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.common.exceptions import TimeoutException
-import argparse
 
-from screenshots import SeleniumScreenshotter
+import issuehandler.config as config
+from issuehandler.pages import (HomePage, LoginPage, NoIssueWithIDException,
+                                RepoPage)
+from issuehandler.screenshots import SeleniumScreenshotter
 
 
 def get_driver() -> WebDriver:

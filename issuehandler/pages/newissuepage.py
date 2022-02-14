@@ -1,10 +1,12 @@
 from __future__ import annotations
-from selenium.webdriver.remote.webdriver import WebDriver
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
-from screenshots import SeleniumScreenshotter
-from utils import safe_send_keys
+from selenium.webdriver.support.ui import WebDriverWait
+
+from issuehandler.screenshots import SeleniumScreenshotter
+from issuehandler.utils import safe_send_keys
 
 
 class NewIssuePage:

@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from issuespage import IssuesPage
-from screenshots import SeleniumScreenshotter
+from issuehandler.screenshots import SeleniumScreenshotter
+
+from .issuespage import IssuesPage
 
 
 class RepoPage:
